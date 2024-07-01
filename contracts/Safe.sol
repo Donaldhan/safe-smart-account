@@ -60,9 +60,9 @@ contract Safe is
 
     uint256 public override nonce;
     bytes32 private _deprecatedDomainSeparator;
-    // Mapping to keep track of all message hashes that have been approved by ALL REQUIRED owners
+    // Mapping to keep track of all message hashes that have been approved by ALL REQUIRED owners 追踪交易hash授权者
     mapping(bytes32 => uint256) public override signedMessages;
-    // Mapping to keep track of all hashes (message or transaction) that have been approved by ANY owners
+    // Mapping to keep track of all hashes (message or transaction) that have been approved by ANY owners 追踪所有消息和交易的hash授权者；
     mapping(address => mapping(bytes32 => uint256)) public override approvedHashes;
 
     // This constructor ensures that this contract can only be used as a singleton for Proxy contracts
@@ -87,14 +87,17 @@ contract Safe is
         address payable paymentReceiver
     ) external override {
         // setupOwners checks if the Threshold is already set, therefore preventing that this method is called twice
+        // 初始化拥有者
         setupOwners(_owners, _threshold);
         if (fallbackHandler != address(0)) internalSetFallbackHandler(fallbackHandler);
         // As setupOwners can only be called if the contract has not been initialized we don't need a check for setupModules
+        // 初始化模块
         setupModules(to, data);
 
         if (payment > 0) {
             // To avoid running into issues with EIP-170 we reuse the handlePayment function (to avoid adjusting code of that has been verified we do not adjust the method itself)
             // baseGas = 0, gasPrice = 1 and gas = payment => amount = (payment + 0) * 1 = payment
+            //处理支付
             handlePayment(payment, 0, 1, paymentToken, paymentReceiver);
         }
         emit SafeSetup(msg.sender, _owners, _threshold, to, fallbackHandler);
@@ -131,11 +134,13 @@ contract Safe is
                 // We use the post-increment here, so the current nonce value is used and incremented afterwards.
                 nonce++
             );
+            //检查签名
             checkSignatures(txHash, signatures);
         }
         address guard = getGuard();
         {
             if (guard != address(0)) {
+                //guard 检查交易
                 Guard(guard).checkTransaction(
                     // Transaction info
                     to,
@@ -157,6 +162,7 @@ contract Safe is
 
         // We require some gas to emit the events (at least 2500) after the execution and some to perform code until the execution (500)
         // We also include the 1/64 in the check that is not send along with a call to counteract potential shortings because of EIP-150
+        // 我们需要至少2500gas，拥有emit事件
         if (gasleft() < ((safeTxGas * 64) / 63).max(safeTxGas + 2500) + 500) revertWithError("GS010");
         // Use scope here to limit variable lifetime and prevent `stack too deep` errors
         {
@@ -184,7 +190,7 @@ contract Safe is
     }
 
     /**
-     * @notice Handles the payment for a Safe transaction.
+     * @notice Handles the payment for a Safe transaction. 处理交易支付金
      * @param gasUsed Gas used by the Safe transaction.
      * @param baseGas Gas costs that are independent of the transaction execution (e.g. base transaction fee, signature check, payment of the refund).
      * @param gasPrice Gas price that should be used for the payment calculation.
@@ -212,7 +218,7 @@ contract Safe is
     }
 
     /**
-     * @notice Checks whether the contract signature is valid. Reverts otherwise.
+     * @notice Checks whether the contract signature is valid. Reverts otherwise. 检查合约签名是否有效
      * @dev This is extracted to a separate function for better compatibility with Certora's prover.
      *      More info here: https://github.com/safe-global/safe-smart-account/pull/661
      * @param owner Address of the owner used to sign the message
@@ -297,18 +303,22 @@ contract Safe is
             } else if (v == 1) {
                 // If v is 1 then it is an approved hash
                 // When handling approved hashes the address of the approver is encoded into r
+                //授权hash
                 currentOwner = address(uint160(uint256(r)));
                 // Hashes are automatically approved by the sender of the message or when they have been pre-approved via a separate transaction
                 if (executor != currentOwner && approvedHashes[currentOwner][dataHash] == 0) revertWithError("GS025");
             } else if (v > 30) {
                 // If v > 30 then default va (27,28) has been adjusted for eth_sign flow
                 // To support eth_sign and similar we adjust v and hash the messageHash with the Ethereum message prefix before applying ecrecover
+                //前缀签名
                 currentOwner = ecrecover(keccak256(abi.encodePacked("\x19Ethereum Signed Message:\n32", dataHash)), uint8(v - 4), r, s);
             } else {
                 // Default is the ecrecover flow with the provided data hash
                 // Use ecrecover with the messageHash for EOA signatures
+                //EOA 签名
                 currentOwner = ecrecover(dataHash, uint8(v), r, s);
             }
+            //签名有顺序？？？
             if (currentOwner <= lastOwner || owners[currentOwner] == address(0) || currentOwner == SENTINEL_OWNERS)
                 revertWithError("GS026");
             lastOwner = currentOwner;

@@ -17,6 +17,7 @@ contract SafeProxyFactory {
     }
 
     /**
+     * 部署代理
      * @notice Internal method to create a new proxy contract using CREATE2. Optionally executes an initializer call to a new proxy.
      * @param _singleton Address of singleton contract. Must be deployed at the time of execution.
      * @param initializer (Optional) Payload for a message call to be sent to a new proxy contract.
@@ -48,6 +49,7 @@ contract SafeProxyFactory {
     }
 
     /**
+     * 带nonce的部署
      * @notice Deploys a new proxy with `_singleton` singleton and `saltNonce` salt. Optionally executes an initializer call to a new proxy.
      * @param _singleton Address of singleton contract. Must be deployed at the time of execution.
      * @param initializer Payload for a message call to be sent to a new proxy contract.
@@ -61,6 +63,7 @@ contract SafeProxyFactory {
     }
 
     /**
+     * 带chainId的部署
      * @notice Deploys a new chain-specific proxy with `_singleton` singleton and `saltNonce` salt. Optionally executes an initializer call to a new proxy.
      * @dev Allows to create a new proxy contract that should exist only on 1 network (e.g. specific governance or admin accounts)
      *      by including the chain id in the create2 salt. Such proxies cannot be created on other networks by replaying the transaction.
@@ -82,6 +85,7 @@ contract SafeProxyFactory {
     /**
      * @notice Deploy a new proxy with `_singleton` singleton and `saltNonce` salt.
      *         Optionally executes an initializer call to a new proxy and calls a specified callback address `callback`.
+     * 带回调的代理创建模式
      * @param _singleton Address of singleton contract. Must be deployed at the time of execution.
      * @param initializer Payload for a message call to be sent to a new proxy contract.
      * @param saltNonce Nonce that will be used to generate the salt to calculate the address of the new proxy contract.

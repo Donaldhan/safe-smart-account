@@ -7,8 +7,9 @@ import {IOwnerManager} from "./IOwnerManager.sol";
 import {IFallbackManager} from "./IFallbackManager.sol";
 
 /**
+ *
  * @title ISafe - A multisignature wallet interface with support for confirmations using signed messages based on EIP-712.
- * @author @safe-global/safe-protocol
+ * @author @safe-global/safe-protocol 多签钱包接口，支持EIP712签名
  */
 interface ISafe is IModuleManager, IOwnerManager, IFallbackManager {
     event SafeSetup(address indexed initiator, address[] owners, uint256 threshold, address initializer, address fallbackHandler);
@@ -18,17 +19,17 @@ interface ISafe is IModuleManager, IOwnerManager, IFallbackManager {
     event ExecutionSuccess(bytes32 indexed txHash, uint256 payment);
 
     /**
-     * @notice Sets an initial storage of the Safe contract.
+     * @notice Sets an initial storage of the Safe contract. 初始化多签钱包
      * @dev This method can only be called once.
      *      If a proxy was created without setting up, anyone can call setup and claim the proxy.
      * @param _owners List of Safe owners.
      * @param _threshold Number of required confirmations for a Safe transaction.
-     * @param to Contract address for optional delegate call.
-     * @param data Data payload for optional delegate call.
-     * @param fallbackHandler Handler for fallback calls to this contract
-     * @param paymentToken Token that should be used for the payment (0 is ETH)
-     * @param payment Value that should be paid
-     * @param paymentReceiver Address that should receive the payment (or 0 if tx.origin)
+     * @param to Contract address for optional delegate call. 代理调用的合约
+     * @param data Data payload for optional delegate call. 代理调用的数据
+     * @param fallbackHandler Handler for fallback calls to this contract fallback处理器
+     * @param paymentToken Token that should be used for the payment (0 is ETH) ， 支付token，0则为ETH
+     * @param payment Value that should be paid 支付value
+     * @param paymentReceiver Address that should receive the payment (or 0 if tx.origin)  支付接受者，如果0，则为tx.origin
      */
     function setup(
         address[] calldata _owners,
@@ -41,24 +42,26 @@ interface ISafe is IModuleManager, IOwnerManager, IFallbackManager {
         address payable paymentReceiver
     ) external;
 
-    /** @notice Executes a `operation` {0: Call, 1: DelegateCall}} transaction to `to` with `value` (Native Currency)
+    /**
+     * @notice Executes a `operation` {0: Call, 1: DelegateCall}} transaction to `to` with `value` (Native Currency)
      *          and pays `gasPrice` * `gasLimit` in `gasToken` token to `refundReceiver`.
      * @dev The fees are always transferred, even if the user transaction fails.
      *      This method doesn't perform any sanity check of the transaction, such as:
      *      - if the contract at `to` address has code or not
      *      - if the `gasToken` is a contract or not
      *      It is the responsibility of the caller to perform such checks.
+     * 即使交易失败，费用依然要支付。注意此方法不做任何交易问题的检查，比如调用地址、gasToken是否为合约，由调用者负责检查
      * @param to Destination address of Safe transaction.
      * @param value Ether value of Safe transaction.
      * @param data Data payload of Safe transaction.
-     * @param operation Operation type of Safe transaction.
+     * @param operation Operation type of Safe transaction. 交易操作类型call或者delegate call
      * @param safeTxGas Gas that should be used for the Safe transaction.
      * @param baseGas Gas costs that are independent of the transaction execution(e.g. base transaction fee, signature check, payment of the refund)
      * @param gasPrice Gas price that should be used for the payment calculation.
      * @param gasToken Token address (or 0 if ETH) that is used for the payment.
-     * @param refundReceiver Address of receiver of gas payment (or 0 if tx.origin).
+     * @param refundReceiver Address of receiver of gas payment (or 0 if tx.origin).  gas退还接受者
      * @param signatures Signature data that should be verified.
-     *                   Can be packed ECDSA signature ({bytes32 r}{bytes32 s}{uint8 v}), contract signature (EIP-1271) or approved hash.
+     *                   Can be packed ECDSA signature ({bytes32 r}{bytes32 s}{uint8 v}), contract signature (EIP-1271) or approved hash. 交易签名
      * @return success Boolean indicating transaction's success.
      */
     function execTransaction(
@@ -75,6 +78,7 @@ interface ISafe is IModuleManager, IOwnerManager, IFallbackManager {
     ) external payable returns (bool success);
 
     /**
+     * 检查签名
      * @notice Checks whether the signature provided is valid for the provided data and hash. Reverts otherwise.
      * @param dataHash Hash of the data (could be either a message hash or transaction hash)
      * @param signatures Signature data that should be verified.
@@ -119,7 +123,7 @@ interface ISafe is IModuleManager, IOwnerManager, IFallbackManager {
     function domainSeparator() external view returns (bytes32);
 
     /**
-     * @notice Returns transaction hash to be signed by owners.
+     * @notice Returns transaction hash to be signed by owners. 签名交易
      * @param to Destination address.
      * @param value Ether value.
      * @param data Data payload.
@@ -163,6 +167,7 @@ interface ISafe is IModuleManager, IOwnerManager, IFallbackManager {
     function nonce() external view returns (uint256);
 
     /**
+     * 签名消息
      * @notice Returns a uint if the messageHash is signed by the owner.
      * @param messageHash Hash of message that should be checked.
      * @return Number denoting if an owner signed the hash.
@@ -170,6 +175,7 @@ interface ISafe is IModuleManager, IOwnerManager, IFallbackManager {
     function signedMessages(bytes32 messageHash) external view returns (uint256);
 
     /**
+     * 授权hash
      * @notice Returns a uint if the messageHash is approved by the owner.
      * @param owner Owner address that should be checked.
      * @param messageHash Hash of message that should be checked.

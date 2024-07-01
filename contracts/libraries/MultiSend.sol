@@ -3,6 +3,7 @@ pragma solidity >=0.7.0 <0.9.0;
 
 /**
  * @title Multi Send - Allows to batch multiple transactions into one.
+ * multi 发送
  * @author Nick Dodson - <nick.dodson@consensys.net>
  * @author Gonçalo Sá - <goncalo.sa@consensys.net>
  * @author Stefan George - @Georgi87

@@ -7,7 +7,7 @@ import {ISafe} from "../../interfaces/ISafe.sol";
 
 /**
  * @title Debug Transaction Guard - Emits transaction events with extended information.
- * @dev This guard is only meant as a development tool and example
+ * @dev This guard is only meant as a development tool and example 开发调试使用Guard
  * @author Richard Meissner - @rmeissner
  */
 contract DebugTransactionGuard is BaseGuard {

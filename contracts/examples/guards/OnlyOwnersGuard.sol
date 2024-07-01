@@ -7,7 +7,7 @@ import {BaseGuard} from "../../base/GuardManager.sol";
 import {ISafe} from "../../interfaces/ISafe.sol";
 
 /**
- * @title OnlyOwnersGuard - Only allows owners to execute transactions.
+ * @title OnlyOwnersGuard - Only allows owners to execute transactions. 拥有者guard
  * @author Richard Meissner - @rmeissner
  */
 contract OnlyOwnersGuard is BaseGuard {

@@ -4,6 +4,7 @@ import {SelfAuthorized} from "../common/SelfAuthorized.sol";
 import {IOwnerManager} from "../interfaces/IOwnerManager.sol";
 
 /**
+ * 基于数组地址环的拥有者管理
  * @title OwnerManager - Manages Safe owners and a threshold to authorize transactions.
  * @dev Uses a linked list to store the owners because the code generate by the solidity compiler
  *      is more efficient than using a dynamic array.
@@ -12,12 +13,15 @@ import {IOwnerManager} from "../interfaces/IOwnerManager.sol";
  */
 abstract contract OwnerManager is SelfAuthorized, IOwnerManager {
     address internal constant SENTINEL_OWNERS = address(0x1);
-
+    //拥有者
     mapping(address => address) internal owners;
+    //拥有者数量
     uint256 internal ownerCount;
+    //阈值
     uint256 internal threshold;
 
     /**
+     * 生成了一个地址环
      * @notice Sets the initial storage of the contract.
      * @param _owners List of Safe owners.
      * @param _threshold Number of required confirmations for a Safe transaction.

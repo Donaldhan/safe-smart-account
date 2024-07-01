@@ -23,6 +23,7 @@ abstract contract ModuleManager is SelfAuthorized, Executor, GuardManager, IModu
     /**
      * @notice Setup function sets the initial storage of the contract.
      *         Optionally executes a delegate call to another contract to setup the modules.
+     * 初始化合约存储，设置方法
      * @param to Optional destination address of call to execute.
      * @param data Optional data of call to execute.
      */
@@ -38,6 +39,7 @@ abstract contract ModuleManager is SelfAuthorized, Executor, GuardManager, IModu
 
     /**
      * @notice Runs pre-execution checks for module transactions if a guard is enabled.
+     * 交易前置检查
      * @param to Target address of module transaction.
      * @param value Ether value of module transaction.
      * @param data Data payload of module transaction.
@@ -62,6 +64,7 @@ abstract contract ModuleManager is SelfAuthorized, Executor, GuardManager, IModu
     }
 
     /**
+     * 模块后置检查
      * @notice Runs post-execution checks for module transactions if a guard is enabled.
      * @param guardHash Hash returned from the guard during pre execution check.
      * @param success Boolean flag indicating if the call succeeded.
@@ -76,7 +79,7 @@ abstract contract ModuleManager is SelfAuthorized, Executor, GuardManager, IModu
         else emit ExecutionFromModuleFailure(msg.sender);
     }
 
-    // @inheritdoc IModuleManager
+    // @inheritdoc IModuleManager 启动模块
     function enableModule(address module) public override authorized {
         // Module address cannot be null or sentinel.
         if (module == address(0) || module == SENTINEL_MODULES) revertWithError("GS101");
@@ -97,7 +100,7 @@ abstract contract ModuleManager is SelfAuthorized, Executor, GuardManager, IModu
         emit DisabledModule(module);
     }
 
-    // @inheritdoc IModuleManager
+    // @inheritdoc IModuleManager 执行模块交易
     function execTransactionFromModule(
         address to,
         uint256 value,
@@ -109,7 +112,7 @@ abstract contract ModuleManager is SelfAuthorized, Executor, GuardManager, IModu
         postModuleExecution(guard, guardHash, success);
     }
 
-    // @inheritdoc IModuleManager
+    // @inheritdoc IModuleManager 执行模块交易，并返回数据
     function execTransactionFromModuleReturnData(
         address to,
         uint256 value,

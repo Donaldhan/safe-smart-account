@@ -9,7 +9,7 @@ import {IGuardManager} from "../interfaces/IGuardManager.sol";
 
 /// @title Guard Interface
 interface Guard is IERC165 {
-    /// @notice Checks the transaction details.
+    /// @notice Checks the transaction details. 交易交易
     /// @dev The function needs to implement transaction validation logic.
     /// @param to The address to which the transaction is intended.
     /// @param value The value of the transaction in Wei.
@@ -36,7 +36,7 @@ interface Guard is IERC165 {
         address msgSender
     ) external;
 
-    /// @notice Checks the module transaction details.
+    /// @notice Checks the module transaction details. 检查模块交易
     /// @dev The function needs to implement module transaction validation logic.
     /// @param to The address to which the transaction is intended.
     /// @param value The value of the transaction in Wei.

@@ -5,6 +5,7 @@ import {Safe, Enum} from "./Safe.sol";
 
 /**
  * @title SafeL2 - An implementation of the Safe contract that emits additional events on transaction executions.
+ * 在交易执行是，会emit额外的交易执行事件实现；
  * @notice For a more complete description of the Safe contract, please refer to the main Safe contract `Safe.sol`.
  * @author Stefan George - @Georgi87
  * @author Richard Meissner - @rmeissner
@@ -41,6 +42,7 @@ contract SafeL2 is Safe {
         address payable refundReceiver,
         bytes memory signatures
     ) public payable override returns (bool) {
+        //emit 额外信息
         bytes memory additionalInfo;
         {
             additionalInfo = abi.encode(nonce, msg.sender, threshold);

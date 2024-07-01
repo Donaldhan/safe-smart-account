@@ -2,6 +2,7 @@
 pragma solidity >=0.7.0 <0.9.0;
 
 /**
+ * 接收原生代币Fallback
  * @title NativeCurrencyPaymentFallback - A contract that has a fallback to accept native currency payments.
  * @author Richard Meissner - @rmeissner
  */

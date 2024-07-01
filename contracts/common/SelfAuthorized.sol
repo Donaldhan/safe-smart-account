@@ -4,6 +4,7 @@ pragma solidity >=0.7.0 <0.9.0;
 import {ErrorMessage} from "../libraries/ErrorMessage.sol";
 
 /**
+ * 自调用检查
  * @title SelfAuthorized - Authorizes current contract to perform actions to itself.
  * @author Richard Meissner - @rmeissner
  */

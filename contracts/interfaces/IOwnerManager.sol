@@ -2,6 +2,7 @@
 pragma solidity >=0.7.0 <0.9.0;
 
 /**
+ * 拥有者管理器，管理用户和阈值验证交易
  * @title IOwnerManager - Interface for contract which manages Safe owners and a threshold to authorize transactions.
  * @author @safe-global/safe-protocol
  */
@@ -11,6 +12,7 @@ interface IOwnerManager {
     event ChangedThreshold(uint256 threshold);
 
     /**
+     * 添加拥有者到给定阈值
      * @notice Adds the owner `owner` to the Safe and updates the threshold to `_threshold`.
      * @dev This can only be done via a Safe transaction.
      * @param owner New owner address.
@@ -28,6 +30,7 @@ interface IOwnerManager {
     function removeOwner(address prevOwner, address owner, uint256 _threshold) external;
 
     /**
+     * 替换拥有者
      * @notice Replaces the owner `oldOwner` in the Safe with `newOwner`.
      * @dev This can only be done via a Safe transaction.
      * @param prevOwner Owner that pointed to the owner to be replaced in the linked list
@@ -37,6 +40,7 @@ interface IOwnerManager {
     function swapOwner(address prevOwner, address oldOwner, address newOwner) external;
 
     /**
+     * 改变阈值
      * @notice Changes the threshold of the Safe to `_threshold`.
      * @dev This can only be done via a Safe transaction.
      * @param _threshold New threshold.

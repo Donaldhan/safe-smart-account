@@ -3,7 +3,7 @@ pragma solidity >=0.7.0 <0.9.0;
 import {Enum} from "../libraries/Enum.sol";
 
 /**
- * @title Executor - A contract that can execute transactions
+ * @title Executor - A contract that can execute transactions 合约执行器
  * @author Richard Meissner - @rmeissner
  */
 abstract contract Executor {
